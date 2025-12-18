@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestBook Pro | Admin Master Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { blue: '#2563eb', dark: '#0f172a', light: '#f1f5f9' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hidden-section { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-brand-dark cursor-pointer" onclick="location.reload()">
+                <i class="fa-solid fa-book-open text-brand-blue mr-2"></i>ExamPro <span class="text-xs bg-yellow-400 text-black px-2 rounded">Pro</span>
+            </div>
+            <div>
+                <button id="logoutBtn" onclick="logout()" class="hidden-section text-sm font-semibold text-red-500 hover:text-red-700">
+                    <i class="fa-solid fa-power-off"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-10 max-w-4xl">
+
+        <div id="auth-section" class="fade-in bg-white p-8 rounded-2xl shadow-xl max-w-md mx-auto">
+            
+            <div class="flex border-b mb-6">
+                <button id="tabStudent" onclick="switchTab('student')" class="w-1/2 py-2 font-bold text-brand-blue border-b-2 border-brand-blue">Student Login</button>
+                <button id="tabAdmin" onclick="switchTab('admin')" class="w-1/2 py-2 font-bold text-slate-400">Admin Login</button>
+            </div>
+
+            <div id="student-login-flow">
+                <div id="step-mobile">
+                    <h2 class="text-2xl font-bold text-center mb-2 text-brand-dark">Student Portal</h2>
+                    <p class="text-center text-slate-500 text-sm mb-6">Enter mobile number to verify</p>
+                    <input type="tel" id="mobileInput" class="w-full px-4 py-3 border rounded-lg mb-4 focus:ring-2 focus:ring-brand-blue outline-none" placeholder="Mobile Number (e.g. 9876543210)">
+                    <button onclick="checkMobile()" class="w-full bg-brand-dark text-white py-3 rounded-lg font-bold hover:bg-slate-800 transition">Proceed <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                </div>
+
+                <div id="step-password" class="hidden-section">
+                    <h3 class="text-xl font-bold mb-4">Welcome Back!</h3>
+                    <p class="text-sm text-slate-500 mb-2">Mobile: <span id="displayMobile" class="font-bold"></span></p>
+                    <input type="password" id="passwordInput" class="w-full px-4 py-3 border rounded-lg mb-4" placeholder="Enter your Password">
+                    <button onclick="loginWithPassword()" class="w-full bg-brand-blue text-white py-3 rounded-lg font-bold">Login</button>
+                    <p class="text-center mt-3 text-sm text-blue-500 cursor-pointer hover:underline" onclick="resetLogin()">Change Number</p>
+                </div>
+
+                <div id="step-otp" class="hidden-section">
+                    <h3 class="text-xl font-bold mb-2">Verify Mobile</h3>
+                    <p class="text-sm text-green-600 mb-4 bg-green-50 p-2 rounded border border-green-200">OTP sent to your mobile (Simulated).</p>
+                    <input type="text" id="otpInput" class="w-full px-4 py-3 border rounded-lg text-center tracking-widest text-2xl" placeholder="XXXX" maxlength="4">
+                    <button onclick="verifyOTP()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold mt-4">Verify OTP</button>
+                    <p class="text-center mt-3 text-sm text-slate-400 cursor-pointer" onclick="resendOTP()">Resend OTP</p>
+                </div>
+
+                <div id="step-register" class="hidden-section">
+                    <h3 class="text-xl font-bold mb-4 text-brand-dark">Create Your Profile</h3>
+                    <form onsubmit="completeRegistration(event)" class="space-y-3">
+                        <input type="text" id="regName" required class="w-full px-4 py-2 border rounded-lg" placeholder="Full Name">
+                        <select id="regClass" onchange="toggleRegStream()" required class="w-full px-4 py-2 border rounded-lg bg-white">
+                            <option value="">Select Class</option>
+                            <option value="10th">10th Class</option>
+                            <option value="12th">12th Class</option>
+                        </select>
+                        <select id="regStream" class="hidden-section w-full px-4 py-2 border rounded-lg bg-white">
+                            <option value="">Select Stream</option>
+                            <option value="Science">Science</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Arts">Arts</option>
+                        </select>
+                        <div class="bg-yellow-50 p-3 rounded border border-yellow-200">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">SET PASSWORD</label>
+                            <input type="password" id="regPassword" required class="w-full px-4 py-2 border rounded-lg" placeholder="Create Password">
+                        </div>
+                        <button type="submit" class="w-full bg-brand-blue text-white py-3 rounded-lg font-bold mt-2">Complete Registration</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="admin-login-flow" class="hidden-section">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-slate-600">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-brand-dark">Admin Access</h2>
+                    <p class="text-slate-500 text-sm">Enter the master password to continue.</p>
+                </div>
+
+                <input type="password" id="adminMasterPassword" class="w-full px-4 py-3 border rounded-lg mb-4 focus:ring-2 focus:ring-slate-500 outline-none" placeholder="Master Password">
+                
+                <button onclick="handleAdminLogin()" class="w-full bg-slate-800 text-white py-3 rounded-lg font-bold hover:bg-black transition">
+                    Unlock Admin Panel
+                </button>
+            </div>
+
+        </div>
+
+        <div id="dashboard-section" class="hidden-section fade-in">
+            <div class="bg-white p-6 rounded-2xl shadow-md mb-8 flex flex-col md:flex-row justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-brand-dark">Hello, <span id="userNameDisplay" class="text-brand-blue"></span>! 👋</h2>
+                    <p class="text-slate-500 mt-1"><i class="fa-solid fa-id-card"></i> Class: <span id="userClassDisplay"></span></p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <button onclick="showHistory()" class="bg-white border border-brand-blue text-brand-blue px-4 py-2 rounded-lg hover:bg-blue-50">
+                        <i class="fa-solid fa-clock-rotate-left"></i> View History
+                    </button>
+                </div>
+            </div>
+
+            <div id="dashboard-content">
+                <h3 class="text-xl font-bold mb-4 text-slate-700 border-l-4 border-brand-blue pl-3">Available Tests</h3>
+                <div id="subjectsGrid" class="grid md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div id="history-content" class="hidden-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-slate-700">Performance History</h3>
+                    <button onclick="hideHistory()" class="text-sm text-blue-500 underline">Back to Tests</button>
+                </div>
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600">
+                            <tr><th class="p-4">Date</th><th class="p-4">Subject</th><th class="p-4">Score</th></tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="text-slate-700"></tbody>
+                    </table>
+                    <p id="noHistoryMsg" class="p-6 text-center text-slate-400 hidden-section">No history found.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="hidden-section fade-in bg-white p-8 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 class="text-xl font-bold text-brand-blue" id="quizSubjectTitle">Subject</h2>
+                <span id="questionCount" class="text-sm font-medium bg-slate-100 px-3 py-1 rounded-full">Q 1/5</span>
+            </div>
+            <div id="quizContent" class="min-h-[200px]">
+                <h3 id="questionText" class="text-lg font-semibold mb-6 text-slate-800">Loading...</h3>
+                <div id="optionsContainer" class="space-y-3"></div>
+            </div>
+            <div class="mt-8 flex justify-between">
+                <button onclick="showSection('dashboard-section')" class="text-slate-500">Quit Test</button>
+                <button onclick="nextQuestion()" class="bg-brand-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700">Next <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            </div>
+        </div>
+
+        <div id="result-section" class="hidden-section fade-in text-center bg-white p-10 rounded-2xl shadow-xl max-w-md mx-auto">
+            <div class="text-6xl text-brand-blue mb-4"><i class="fa-solid fa-medal"></i></div>
+            <h2 class="text-2xl font-bold mb-2">Test Submitted!</h2>
+            <div class="text-5xl font-bold text-brand-dark my-6"><span id="finalScore">0</span> <span class="text-2xl text-slate-400">/ <span id="totalScore">0</span></span></div>
+            <button onclick="showSection('dashboard-section')" class="bg-brand-dark text-white px-8 py-3 rounded-lg font-bold w-full">Dashboard</button>
+        </div>
+
+        <div id="admin-section" class="hidden-section fade-in bg-white p-8 rounded-2xl shadow-xl border-t-4 border-slate-800">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-2xl font-bold text-brand-dark"><i class="fa-solid fa-user-shield mr-2"></i>Admin Panel</h2>
+                <button onclick="logout()" class="text-red-500 font-bold text-sm">Logout</button>
+            </div>
+            
+            <form onsubmit="addQuestion(event)" class="space-y-4">
+                <div class="grid md:grid-cols-3 gap-4">
+                    <select id="adminClass" onchange="toggleAdminStream()" required class="px-4 py-2 border rounded-lg bg-slate-50">
+                        <option value="">Target Class</option>
+                        <option value="10th">10th</option>
+                        <option value="12th">12th</option>
+                    </select>
+                    <select id="adminStream" class="hidden-section px-4 py-2 border rounded-lg bg-slate-50">
+                        <option value="">Stream</option>
+                        <option value="Science">Science</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Arts">Arts</option>
+                    </select>
+                    <input type="text" id="adminSubject" required placeholder="Subject" class="px-4 py-2 border rounded-lg bg-slate-50">
+                </div>
+                <textarea id="newQuestion" required placeholder="Question Text" class="w-full px-4 py-2 border rounded-lg bg-slate-50 h-24"></textarea>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="optA" required placeholder="Option A" class="px-3 py-2 border rounded">
+                    <input type="text" id="optB" required placeholder="Option B" class="px-3 py-2 border rounded">
+                    <input type="text" id="optC" required placeholder="Option C" class="px-3 py-2 border rounded">
+                    <input type="text" id="optD" required placeholder="Option D" class="px-3 py-2 border rounded">
+                </div>
+                <select id="correctAnswer" required class="w-full px-4 py-2 border rounded-lg bg-green-50">
+                    <option value="">Select Correct Answer</option>
+                    <option value="0">Option A</option>
+                    <option value="1">Option B</option>
+                    <option value="2">Option C</option>
+                    <option value="3">Option D</option>
+                </select>
+                <button type="submit" class="w-full bg-slate-800 text-white py-3 rounded-lg font-bold hover:bg-black transition">Save Question</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const MASTER_PASSWORD = "admin123"; // YAHAN PASSWORD CHANGE KAREIN
+
+        // --- DATA STORAGE ---
+        let usersDB = JSON.parse(localStorage.getItem('testbook_users')) || {}; 
+        let defaultQuestions = [
+            { id: 1, class: '10th', stream: null, subject: 'Maths', q: '10 + 10 = ?', options: ['10', '20', '30', '40'], ans: 1 },
+            { id: 2, class: '12th', stream: 'Science', subject: 'Physics', q: 'Unit of Force?', options: ['Joule', 'Newton', 'Watt', 'Pascal'], ans: 1 }
+        ];
+        let questionsDB = JSON.parse(localStorage.getItem('testbook_questions')) || defaultQuestions;
+
+        // Variables
+        let tempMobile = '';
+        let generatedOTP = '';
+        let loggedUser = null;
+        let currentQuiz = [];
+        let currentQIndex = 0;
+        let score = 0;
+
+        // --- AUTHENTICATION ---
+        function switchTab(role) {
+            if(role === 'admin') {
+                document.getElementById('student-login-flow').classList.add('hidden-section');
+                document.getElementById('admin-login-flow').classList.remove('hidden-section');
+                
+                document.getElementById('tabAdmin').classList.add('text-brand-blue', 'border-b-2', 'border-brand-blue');
+                document.getElementById('tabAdmin').classList.remove('text-slate-400');
+                document.getElementById('tabStudent').classList.remove('text-brand-blue', 'border-b-2', 'border-brand-blue');
+                document.getElementById('tabStudent').classList.add('text-slate-400');
+            } else {
+                document.getElementById('admin-login-flow').classList.add('hidden-section');
+                document.getElementById('student-login-flow').classList.remove('hidden-section');
+                
+                document.getElementById('tabStudent').classList.add('text-brand-blue', 'border-b-2', 'border-brand-blue');
+                document.getElementById('tabStudent').classList.remove('text-slate-400');
+                document.getElementById('tabAdmin').classList.remove('text-brand-blue', 'border-b-2', 'border-brand-blue');
+                document.getElementById('tabAdmin').classList.add('text-slate-400');
+            }
+        }
+
+        // --- ADMIN LOGIN LOGIC ---
+        function handleAdminLogin() {
+            const inputPwd = document.getElementById('adminMasterPassword').value;
+            if(inputPwd === MASTER_PASSWORD) {
+                showSection('admin-section');
+                document.getElementById('adminMasterPassword').value = ''; // clear input
+            } else {
+                alert("ACCESS DENIED: Wrong Password!");
+            }
+        }
+
+        // --- STUDENT LOGIN LOGIC ---
+        function checkMobile() {
+            const mobile = document.getElementById('mobileInput').value.trim();
+            if(mobile.length < 10) { alert("Invalid Mobile Number"); return; }
+            tempMobile = mobile;
+
+            if(usersDB[mobile]) {
+                document.getElementById('step-mobile').classList.add('hidden-section');
+                document.getElementById('step-password').classList.remove('hidden-section');
+                document.getElementById('displayMobile').innerText = mobile;
+            } else {
+                sendOTP();
+            }
+        }
+
+        function sendOTP() {
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            alert(`[SMS ALERT]\nYour OTP is: ${generatedOTP}`);
+            document.getElementById('step-mobile').classList.add('hidden-section');
+            document.getElementById('step-otp').classList.remove('hidden-section');
+        }
+
+        function verifyOTP() {
+            const inputOTP = document.getElementById('otpInput').value;
+            if(inputOTP === generatedOTP) {
+                document.getElementById('step-otp').classList.add('hidden-section');
+                document.getElementById('step-register').classList.remove('hidden-section');
+            } else {
+                alert("Invalid OTP");
+            }
+        }
+
+        function resendOTP() { sendOTP(); }
+
+        function loginWithPassword() {
+            const pwd = document.getElementById('passwordInput').value;
+            if(usersDB[tempMobile].password === pwd) {
+                loggedUser = usersDB[tempMobile];
+                loggedUser.mobile = tempMobile;
+                showSection('dashboard-section');
+                loadDashboard();
+            } else {
+                alert("Wrong Password");
+            }
+        }
+
+        function toggleRegStream() {
+            const val = document.getElementById('regClass').value;
+            const stream = document.getElementById('regStream');
+            if(val === '12th') stream.classList.remove('hidden-section');
+            else stream.classList.add('hidden-section');
+        }
+
+        function completeRegistration(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const cls = document.getElementById('regClass').value;
+            const stream = document.getElementById('regStream').value || null;
+            const pwd = document.getElementById('regPassword').value;
+
+            if(cls === '12th' && !stream) { alert("Select Stream"); return; }
+
+            usersDB[tempMobile] = { name, class: cls, stream, password: pwd, history: [] };
+            localStorage.setItem('testbook_users', JSON.stringify(usersDB));
+
+            loggedUser = usersDB[tempMobile];
+            loggedUser.mobile = tempMobile;
+            alert("Registered! You can now login using password.");
+            showSection('dashboard-section');
+            loadDashboard();
+        }
+
+        // --- DASHBOARD ---
+        function loadDashboard() {
+            document.getElementById('userNameDisplay').innerText = loggedUser.name;
+            let clsTxt = loggedUser.class;
+            if(loggedUser.stream) clsTxt += ` (${loggedUser.stream})`;
+            document.getElementById('userClassDisplay').innerText = clsTxt;
+
+            const grid = document.getElementById('subjectsGrid');
+            grid.innerHTML = '';
+            
+            const myQuestions = questionsDB.filter(q => {
+                if(q.class !== loggedUser.class) return false;
+                if(loggedUser.class === '12th' && q.stream !== loggedUser.stream) return false;
+                return true;
+            });
+            const subjects = [...new Set(myQuestions.map(q => q.subject))];
+
+            if(subjects.length === 0) {
+                grid.innerHTML = `<div class="col-span-3 text-center text-slate-400">No tests available.</div>`;
+                return;
+            }
+
+            subjects.forEach(sub => {
+                grid.innerHTML += `
+                    <div onclick="startTest('${sub}')" class="bg-white border p-6 rounded-xl hover:shadow-lg cursor-pointer transition transform hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mb-3"><i class="fa-solid fa-pen-nib"></i></div>
+                        <h4 class="font-bold text-lg">${sub}</h4>
+                        <p class="text-xs text-slate-500">Click to start</p>
+                    </div>
+                `;
+            });
+        }
+
+        function showHistory() {
+            document.getElementById('dashboard-content').classList.add('hidden-section');
+            document.getElementById('history-content').classList.remove('hidden-section');
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            const history = loggedUser.history || [];
+            
+            if(history.length === 0) document.getElementById('noHistoryMsg').classList.remove('hidden-section');
+            else {
+                document.getElementById('noHistoryMsg').classList.add('hidden-section');
+                history.slice().reverse().forEach(h => {
+                    tbody.innerHTML += `<tr class="border-b"><td class="p-4 text-sm">${h.date}</td><td class="p-4 font-bold">${h.subject}</td><td class="p-4">${h.score} / ${h.total}</td></tr>`;
+                });
+            }
+        }
+        function hideHistory() {
+            document.getElementById('history-content').classList.add('hidden-section');
+            document.getElementById('dashboard-content').classList.remove('hidden-section');
+        }
+
+        // --- QUIZ ---
+        let currentSubject = '';
+        function startTest(subject) {
+            currentSubject = subject;
+            currentQuiz = questionsDB.filter(q => {
+                if(q.class !== loggedUser.class) return false;
+                if(loggedUser.class === '12th' && q.stream !== loggedUser.stream) return false;
+                return q.subject === subject;
+            });
+            if(currentQuiz.length === 0) return;
+            currentQIndex = 0; score = 0;
+            document.getElementById('quizSubjectTitle').innerText = subject;
+            showSection('quiz-section');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuiz[currentQIndex];
+            document.getElementById('questionCount').innerText = `Q ${currentQIndex + 1}/${currentQuiz.length}`;
+            document.getElementById('questionText').innerText = q.q;
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left px-4 py-3 border rounded-lg hover:bg-slate-50 option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        let selectedIdx = null;
+        function selectOption(idx, btn) {
+            selectedIdx = idx;
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white');
+                b.classList.add('hover:bg-slate-50');
+            });
+            btn.classList.remove('hover:bg-slate-50');
+            btn.classList.add('bg-blue-600', 'text-white');
+        }
+
+        function nextQuestion() {
+            if(selectedIdx === null) { alert("Select option"); return; }
+            if(selectedIdx === currentQuiz[currentQIndex].ans) score++;
+            selectedIdx = null; currentQIndex++;
+            if(currentQIndex < currentQuiz.length) loadQuestion();
+            else finishTest();
+        }
+
+        function finishTest() {
+            loggedUser.history.push({ subject: currentSubject, score, total: currentQuiz.length, date: new Date().toLocaleDateString() });
+            usersDB[loggedUser.mobile] = loggedUser;
+            localStorage.setItem('testbook_users', JSON.stringify(usersDB));
+            document.getElementById('finalScore').innerText = score;
+            document.getElementById('totalScore').innerText = currentQuiz.length;
+            showSection('result-section');
+        }
+
+        // --- ADMIN ---
+        function toggleAdminStream() {
+            const cls = document.getElementById('adminClass').value;
+            const strm = document.getElementById('adminStream');
+            if(cls === '12th') strm.classList.remove('hidden-section');
+            else strm.classList.add('hidden-section');
+        }
+
+        function addQuestion(e) {
+            e.preventDefault();
+            const qObj = {
+                id: Date.now(),
+                class: document.getElementById('adminClass').value,
+                stream: document.getElementById('adminStream').value || null,
+                subject: document.getElementById('adminSubject').value,
+                q: document.getElementById('newQuestion').value,
+                options: [document.getElementById('optA').value, document.getElementById('optB').value, document.getElementById('optC').value, document.getElementById('optD').value],
+                ans: parseInt(document.getElementById('correctAnswer').value)
+            };
+            questionsDB.push(qObj);
+            localStorage.setItem('testbook_questions', JSON.stringify(questionsDB));
+            alert("Question Saved!");
+            e.target.reset();
+            toggleAdminStream();
+        }
+
+        // --- UTILS ---
+        function showSection(id) {
+            document.querySelectorAll('[id$="-section"]').forEach(el => el.classList.add('hidden-section'));
+            document.getElementById(id).classList.remove('hidden-section');
+            if(id === 'auth-section') document.getElementById('logoutBtn').classList.add('hidden-section');
+            else document.getElementById('logoutBtn').classList.remove('hidden-section');
+        }
+        function resetLogin() {
+            document.getElementById('step-password').classList.add('hidden-section');
+            document.getElementById('step-mobile').classList.remove('hidden-section');
+            document.getElementById('passwordInput').value = '';
+        }
+        function logout() { loggedUser = null; resetLogin(); showSection('auth-section'); }
+    </script>
+</body>
+</html>
